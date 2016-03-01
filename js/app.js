@@ -49,8 +49,19 @@ Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-Player.prototype.handleInput = function() {
-
+Player.prototype.handleInput = function(key) {
+    if (key == 'left') {
+        console.log('Left key press detected.')
+    }
+    else if (key == 'up') {
+        console.log('Up key press detected.')
+    }
+    else if (key == 'right') {
+        console.log('Right key press detected.')
+    }
+    else if (key == 'down') {
+        console.log('Down key press detected.')
+    };
 };
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
