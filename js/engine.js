@@ -23,6 +23,7 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
+        waterCoords = [],
         level, lastTime;
 
     canvas.width = 505;
@@ -139,15 +140,20 @@ var Engine = (function(global) {
             level1.map.push(addRow);
         }
 
+        // Declare the current level and render it on the canvas.
         level = level1;
 
         for (row = 0; row < level.numRows; row++) {
             for (col= 0; col < level.numCols; col++) {
-                ctx.drawImage(Resources.get(level.map[row][col]), col * cells.w, row * cells.h);
+                cellX = col * cells.w;
+                cellY = row * cells.h;
+                ctx.drawImage(Resources.get(level.map[row][col]), cellX, cellY);
+                if (level.map[row][col] == cells.water) {
+                    waterCoords.push([cellX, cellY]);
+                }
             };
 
         };
-
         renderEntities();
     }
 
@@ -192,4 +198,5 @@ var Engine = (function(global) {
      * from within their app.js files.
      */
     global.ctx = ctx;
+    global.waterCoords = waterCoords;
 })(this);
