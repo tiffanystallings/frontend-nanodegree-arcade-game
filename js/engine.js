@@ -23,7 +23,7 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
-        lastTime;
+        level, lastTime;
 
     canvas.width = 505;
     canvas.height = 606;
@@ -104,37 +104,49 @@ var Engine = (function(global) {
      * they are just drawing the entire screen over and over.
      */
     function render() {
-        /* This array holds the relative URL to the image used
-         * for that particular row of the game level.
+        /* Combined images to a function for the renderer to reference
+        /* to make designing additional levels easier.
          */
-        var rowImages = [
-                'images/water-block.png',   // Top row is water
-                'images/stone-block.png',   // Row 1 of 3 of stone
-                'images/stone-block.png',   // Row 2 of 3 of stone
-                'images/stone-block.png',   // Row 3 of 3 of stone
-                'images/grass-block.png',   // Row 1 of 2 of grass
-                'images/grass-block.png'    // Row 2 of 2 of grass
-            ],
-            numRows = 6,
-            numCols = 5,
-            row, col;
+        var cells = {
+            'water': 'images/water-block.png',
+            'grass': 'images/grass-block.png',
+            'stone': 'images/stone-block.png',
+            'h': 83,
+            'w': 101
+        },
+        // Build Level 1.
+        level1 = {
+            'numRows': 6,
+            'numCols': 5,
+            'map': []
+        },
 
-        /* Loop through the number of rows and columns we've defined above
-         * and, using the rowImages array, draw the correct image for that
-         * portion of the "grid"
-         */
-        for (row = 0; row < numRows; row++) {
-            for (col = 0; col < numCols; col++) {
-                /* The drawImage function of the canvas' context element
-                 * requires 3 parameters: the image to draw, the x coordinate
-                 * to start drawing and the y coordinate to start drawing.
-                 * We're using our Resources helpers to refer to our images
-                 * so that we get the benefits of caching these images, since
-                 * we're using them over and over.
-                 */
-                ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
-            }
+        row, col;
+
+        for (row = 0; row < level1.numRows; row++) {
+            addRow = [];
+            for (col = 0; col < level1.numCols; col++) {
+                if (row === 0) {
+                    addRow.push(cells.water);
+                }
+                else if (row === 1 || row === 2 || row === 3) {
+                    addRow.push(cells.stone);
+                }
+                else {
+                    addRow.push(cells.grass);
+                }
+            };
+            level1.map.push(addRow);
         }
+
+        level = level1;
+
+        for (row = 0; row < level.numRows; row++) {
+            for (col= 0; col < level.numCols; col++) {
+                ctx.drawImage(Resources.get(level.map[row][col]), col * cells.w, row * cells.h);
+            };
+
+        };
 
         renderEntities();
     }
@@ -180,5 +192,4 @@ var Engine = (function(global) {
      * from within their app.js files.
      */
     global.ctx = ctx;
-    global.canvas = canvas;
 })(this);
