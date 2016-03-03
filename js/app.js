@@ -8,6 +8,8 @@ var Enemy = function(y) {
     this.sprite = 'images/enemy-bug.png';
     this.x = -100;
     this.y = y;
+    this.w = 70;
+    this.h = 70;
     this.speed = Math.floor(Math.random() * 300) + 50;
 };
 
@@ -24,6 +26,16 @@ Enemy.prototype.update = function(dt) {
     if (this.x > 600) {
         this.x = -100;
     };
+
+    //Collision
+    if (this.x < player.x + player.w &&
+        this.x + this.w > player.x &&
+        this.y < player.y + player.h &&
+        this.h + this.y > player.y) {
+
+        player.x = 202;
+        player.y = 375;
+    };
 };
 
 // Draw the enemy on the screen, required method for game
@@ -39,10 +51,12 @@ var Player = function() {
     this.sprite = 'images/char-boy.png';
     this.x = 202;
     this.y = 375;
+    this.w = 50;
+    this.h = 70;
 };
 
 Player.prototype.update = function() {
-
+    window.requestAnimationFrame(Player.prototype.update);
 };
 
 Player.prototype.render = function() {
@@ -51,25 +65,21 @@ Player.prototype.render = function() {
 
 Player.prototype.handleInput = function(key) {
     if (key == 'left') {
-        console.log('Left key press detected.')
         if (this.x - 100 > 0) {
             this.x -= 100
         }
     }
     else if (key == 'up') {
-        console.log('Up key press detected.')
         if (this.y - 85 > -100) {
             this.y -= 85
         }
     }
     else if (key == 'right') {
-        console.log('Right key press detected.')
         if (this.x + 100 < 500) {
             this.x += 100;
         }
     }
     else if (key == 'down') {
-        console.log('Down key press detected.')
         if (this.y + 85 < 400) {
             this.y += 85;
         }
