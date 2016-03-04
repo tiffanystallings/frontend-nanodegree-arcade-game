@@ -96,6 +96,9 @@ var Engine = (function(global) {
             enemy.update(dt);
         });
         player.update();
+        water.forEach(function(water) {
+            water.update(dt);
+        });
     }
 
     /* This function initially draws the "game level", it will then call
@@ -147,9 +150,12 @@ var Engine = (function(global) {
             for (col= 0; col < level.numCols; col++) {
                 var cellX = col * cells.w;
                 var cellY = row * cells.h;
-                var cellCoords = [cellX, cellY];
+                var cellCoords = [cellX, cellY - cells.h];
                 ctx.drawImage(Resources.get(level.map[row][col]), cellX, cellY);
-                if (level.map[row][col] == cells.water && checkIfIn(waterCoords, cellCoords) === false) {
+
+                // Track coordinates of water blocks for collision.
+                if (level.map[row][col] == cells.water &&
+                    checkIfIn(waterCoords, cellCoords) === false) {
                     waterCoords.push(cellCoords);
                 };
             };
@@ -172,6 +178,9 @@ var Engine = (function(global) {
         }
 
         renderEntities();
+        water.forEach(function(water){
+            water.instantiate(waterCoords);
+        });
     }
 
     /* This function is called by the render function and is called on each game

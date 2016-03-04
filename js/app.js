@@ -1,3 +1,16 @@
+//Function for detecting collision.
+
+function checkPlayerCollide(obj) {
+    if (obj.x < player.x + player.w &&
+        obj.x + obj.w > player.x &&
+        obj.y < player.y + player.h &&
+        obj.h + obj.y > player.y) {
+
+        player.x = 202;
+        player.y = 375;
+    };
+}
+
 // Enemies our player must avoid
 var Enemy = function(y) {
     // Variables applied to each of our instances go here,
@@ -28,20 +41,34 @@ Enemy.prototype.update = function(dt) {
     };
 
     //Collision
-    if (this.x < player.x + player.w &&
-        this.x + this.w > player.x &&
-        this.y < player.y + player.h &&
-        this.h + this.y > player.y) {
-
-        player.x = 202;
-        player.y = 375;
-    };
+    checkPlayerCollide(this);
 };
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
+
+//Establishing water block locations for collision.
+var WaterBlock = function(x, y) {
+    this.x = x;
+    this.y = y;
+    this.w = 101;
+    this.h = 83;
+};
+
+WaterBlock.prototype.update = function(dt) {
+    checkPlayerCollide(this);
+}
+
+WaterBlock.prototype.instantiate = function(coords) {
+    water = [];
+    if (water.length < coords.length) {
+        for (i = 0; i < coords.length; i++) {
+            water.push(new WaterBlock(coords[i][0], coords[i][1]));
+        };
+    }
+}
 
 // Now write your own player class
 // This class requires an update(), render() and
@@ -57,10 +84,6 @@ var Player = function() {
 
 Player.prototype.update = function() {
     window.requestAnimationFrame(Player.prototype.update);
-
-    for (var i = 0; i < waterCoords.length; i++){
-        console.log(waterCoords.length);
-    }
 };
 
 Player.prototype.render = function() {
@@ -90,6 +113,7 @@ Player.prototype.handleInput = function(key) {
     };
 };
 // Now instantiate your objects.
+var water = [new WaterBlock(0, 0)];
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 var allEnemies = [new Enemy(50), new Enemy(135), new Enemy(220)];
