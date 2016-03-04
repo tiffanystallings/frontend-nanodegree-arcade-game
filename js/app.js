@@ -57,6 +57,10 @@ var Player = function() {
 
 Player.prototype.update = function() {
     window.requestAnimationFrame(Player.prototype.update);
+
+    for (var i = 0; i < waterCoords.length; i++){
+        console.log(waterCoords.length);
+    }
 };
 
 Player.prototype.render = function() {

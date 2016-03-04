@@ -145,15 +145,32 @@ var Engine = (function(global) {
 
         for (row = 0; row < level.numRows; row++) {
             for (col= 0; col < level.numCols; col++) {
-                cellX = col * cells.w;
-                cellY = row * cells.h;
+                var cellX = col * cells.w;
+                var cellY = row * cells.h;
+                var cellCoords = [cellX, cellY];
                 ctx.drawImage(Resources.get(level.map[row][col]), cellX, cellY);
-                if (level.map[row][col] == cells.water) {
-                    waterCoords.push([cellX, cellY]);
+                if (level.map[row][col] == cells.water && checkIfIn(waterCoords, cellCoords) === false) {
+                    waterCoords.push(cellCoords);
+                };
+            };
+        };
+
+        // Checking if a value has already been pushed to the array.
+        function checkIfIn(array, value) {
+            var count = 0;
+            for (var i = 0; i < array.length; i++) {
+                if (array[i][0] == value[0] && array[i][1] == value[1]) {
+                    count ++;
                 }
             };
+            if (count === 0) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
 
-        };
         renderEntities();
     }
 
