@@ -1,10 +1,10 @@
 //Function for detecting collision.
 
-function checkPlayerCollide(obj) {
-    if (obj.x < player.x + player.w &&
-        obj.x + obj.w > player.x &&
-        obj.y < player.y + player.h &&
-        obj.h + obj.y > player.y) {
+function checkCollision(obj1, obj2) {
+    if (obj1.x < obj2.x + obj2.w &&
+        obj1.x + obj1.w > obj2.x &&
+        obj1.y < obj2.y + obj2.h &&
+        obj1.h + obj1.y > obj2.y) {
 
         player.x = 202;
         player.y = 375;
@@ -41,7 +41,7 @@ Enemy.prototype.update = function(dt) {
     };
 
     //Collision
-    checkPlayerCollide(this);
+    checkCollision(this, player);
 };
 
 // Draw the enemy on the screen, required method for game
@@ -58,7 +58,7 @@ var WaterBlock = function(x, y) {
 };
 
 WaterBlock.prototype.update = function(dt) {
-    checkPlayerCollide(this);
+    checkCollision(this, player);
 }
 
 WaterBlock.prototype.instantiate = function(coords) {
