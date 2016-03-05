@@ -5,10 +5,16 @@ function checkCollision(obj1, obj2) {
         obj1.x + obj1.w > obj2.x &&
         obj1.y < obj2.y + obj2.h &&
         obj1.h + obj1.y > obj2.y) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
 
-        player.x = 202;
-        player.y = 375;
-    };
+function resetPlayer() {
+    player.x = 202;
+    player.y = 375;
 }
 
 // Enemies our player must avoid
@@ -41,7 +47,9 @@ Enemy.prototype.update = function(dt) {
     };
 
     //Collision
-    checkCollision(this, player);
+    if (checkCollision(this, player)) {
+        resetPlayer();
+    }
 };
 
 // Draw the enemy on the screen, required method for game
@@ -58,7 +66,9 @@ var WaterBlock = function(x, y) {
 };
 
 WaterBlock.prototype.update = function(dt) {
-    checkCollision(this, player);
+    if (checkCollision(this, player)) {
+        resetPlayer();
+    }
 }
 
 WaterBlock.prototype.instantiate = function(coords) {
