@@ -63,7 +63,6 @@ var Engine = (function(global) {
     function init() {
 
         lastTime = Date.now();
-        //main();
         reset();
     }
 
@@ -223,4 +222,5 @@ var Engine = (function(global) {
     global.ctx = ctx;
     global.canvas = canvas;
     global.waterCoords = waterCoords;
+    global.main = main;
 })(this);
