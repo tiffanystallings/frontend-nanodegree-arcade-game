@@ -180,6 +180,8 @@ var Engine = (function(global) {
         water.forEach(function(water){
             water.instantiate(waterCoords);
         });
+
+        UI();
     }
 
     /* This function is called by the render function and is called on each game
@@ -264,7 +266,8 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/heart.png'
     ]);
     Resources.onReady(init);
 
