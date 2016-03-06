@@ -12,11 +12,6 @@ function checkCollision(obj1, obj2) {
     }
 }
 
-function resetPlayer() {
-    player.x = 202;
-    player.y = 375;
-}
-
 // Enemies our player must avoid
 var Enemy = function(y) {
     // Variables applied to each of our instances go here,
@@ -48,7 +43,8 @@ Enemy.prototype.update = function(dt) {
 
     //Collision
     if (checkCollision(this, player)) {
-        resetPlayer();
+        player.resetPlayer();
+        player.loseLife();
     }
 };
 
@@ -67,7 +63,8 @@ var WaterBlock = function(x, y) {
 
 WaterBlock.prototype.update = function(dt) {
     if (checkCollision(this, player)) {
-        resetPlayer();
+        player.resetPlayer();
+        player.loseLife();
     }
 }
 
@@ -90,6 +87,7 @@ var Player = function() {
     this.y = 375;
     this.w = 50;
     this.h = 70;
+    this.lives = 3;
 };
 
 Player.prototype.update = function() {
@@ -122,6 +120,16 @@ Player.prototype.handleInput = function(key) {
         }
     };
 };
+
+Player.prototype.loseLife = function() {
+    this.lives -= 1;
+    console.log(this.lives);
+}
+
+Player.prototype.resetPlayer = function(){
+    player.x = 202;
+    player.y = 375;
+}
 
 // Class for start/reset buttons
 var Button = function(x, y, w, h, text) {
