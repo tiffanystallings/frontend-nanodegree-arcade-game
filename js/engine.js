@@ -76,7 +76,10 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+
+        if (player.lives < 0) {
+            location.reload();
+        }
     }
 
     /* This is called by the update function and loops through all of the
@@ -94,6 +97,7 @@ var Engine = (function(global) {
         water.forEach(function(water) {
             water.update(dt);
         });
+
     }
 
     /* This function initially draws the "game level", it will then call
@@ -244,7 +248,9 @@ var Engine = (function(global) {
             };
 
             if (checkCollision(button, clickObj)) {
-                button.clicked();
+                ctx.fillstyle = '#fff';
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                main();
             }
         });
 }
@@ -269,5 +275,4 @@ var Engine = (function(global) {
     global.ctx = ctx;
     global.canvas = canvas;
     global.waterCoords = waterCoords;
-    global.main = main;
 })(this);

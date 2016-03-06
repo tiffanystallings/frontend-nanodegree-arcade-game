@@ -142,9 +142,7 @@ var Button = function(x, y, w, h, text) {
 
 // Initialize main on button click
 Button.prototype.clicked = function() {;
-    ctx.fillstyle = '#fff';
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    main();
+    return true;
 }
 
 Button.prototype.draw = function() {
