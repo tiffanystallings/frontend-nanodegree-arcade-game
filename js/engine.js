@@ -61,7 +61,6 @@ var Engine = (function(global) {
     }
 
     function init() {
-
         lastTime = Date.now();
         reset();
     }
@@ -201,6 +200,54 @@ var Engine = (function(global) {
     function reset() {
         splashScreen();
     }
+
+    //This function runs the opening screen
+    function splashScreen() {
+        //Set up background
+        var cells = {
+             'grass': 'images/grass-block.png',
+             'stone': 'images/stone-block.png',
+             'h': 83,
+             'w': 101
+            },
+            background = [
+                cells.grass,
+                cells.grass,
+                cells.stone,
+                cells.stone,
+                cells.grass,
+                cells.grass],
+
+            numRows = 6,
+            numCols = 5,
+            row, col;
+
+        for (row = 0; row < numRows; row++) {
+            for (col = 0; col < numCols; col++) {
+                ctx.drawImage(Resources.get(background[row]),
+                    col * cells.w, row * cells.h);
+            }
+        }
+
+        //Define and draw the start button.
+        button = new Button(canvas.width/2-150, canvas.height/2-50,
+            300, 100, 'Play!')
+        button.draw();
+
+        //Check if start button has been clicked.
+        document.addEventListener('click', function(e) {
+            var clickObj = {
+                'x': e.offsetX,
+                'y': e.offsetY,
+                'h': 3,
+                'w': 3
+            };
+
+            if (checkCollision(button, clickObj)) {
+                button.clicked();
+            }
+        });
+}
 
     /* Go ahead and load all of the images we know we're going to need to
      * draw our game level. Then set init as the callback method, so that when

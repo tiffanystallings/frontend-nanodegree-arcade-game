@@ -122,6 +122,38 @@ Player.prototype.handleInput = function(key) {
         }
     };
 };
+
+// Class for start/reset buttons
+var Button = function(x, y, w, h, text) {
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.text = text;
+}
+
+// Initialize main on button click
+Button.prototype.clicked = function() {;
+    ctx.fillstyle = '#fff';
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    main();
+}
+
+Button.prototype.draw = function() {
+    ctx.fillStyle = '#4e66d2';
+    ctx.strokeStyle = '#fff'
+    ctx.lineWidth = 5;
+    ctx.fillRect(button.x, button.y, button.w, button.h);
+    ctx.strokeRect(button.x, button.y, button.w, button.h);
+
+    ctx.font = '36pt Impact';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#fff';
+    ctx.fillText(button.text, button.x + button.w/2,
+        button.y + button.h/2);
+}
+
 // Now instantiate your objects.
 var water = [new WaterBlock(0, 0)];
 // Place all enemy objects in an array called allEnemies
