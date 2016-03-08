@@ -88,6 +88,7 @@ var Player = function() {
     this.w = 50;
     this.h = 70;
     this.lives = 3;
+    this.score = 0;
 };
 
 Player.prototype.update = function() {

@@ -5,5 +5,8 @@ var UI = function() {
 	ctx.font = '36pt Impact';
 	ctx.fillStyle = '#fff';
 	ctx.textBaseline = 'hanging';
-	ctx.fillText('x'+player.lives, 75, 65);
+	ctx.fillText('x'+player.lives, 100, 65);
+
+	ctx.textAlign = 'right';
+	ctx.fillText(player.score, 500, 65);
 }
