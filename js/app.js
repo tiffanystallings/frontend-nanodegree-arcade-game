@@ -77,14 +77,11 @@ WaterBlock.prototype.instantiate = function(coords) {
     }
 }
 
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
-
-var Player = function() {
+// This class defines the player object and holds game data.
+var Player = function(x, y) {
     this.sprite = 'images/char-boy.png';
-    this.x = 202;
-    this.y = 375;
+    this.x = x;
+    this.y = y;
     this.w = 50;
     this.h = 70;
     this.lives = 3;
@@ -132,18 +129,13 @@ Player.prototype.resetPlayer = function(){
     player.y = 375;
 }
 
-// Class for start/reset buttons
+// This class defines the style for UI buttons
 var Button = function(x, y, w, h, text) {
     this.x = x;
     this.y = y;
     this.w = w;
     this.h = h;
     this.text = text;
-}
-
-// Initialize main on button click
-Button.prototype.clicked = function() {;
-    return true;
 }
 
 Button.prototype.draw = function() {
@@ -161,12 +153,22 @@ Button.prototype.draw = function() {
         button.y + button.h/2);
 }
 
-// Now instantiate your objects.
+//Star collectible class
+var Star = function (x, y) {
+    this.x = x;
+    this.y = y;
+    this.w = 101;
+    this.h = 83;
+}
+
+
+
+// Instantiating water objects
 var water = [new WaterBlock(0, 0)];
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
+
+// Instantiating player and enemies.
 var allEnemies = [new Enemy(50), new Enemy(135), new Enemy(220)];
-var player = new Player();
+var player = new Player(202, 375);
 
 
 // This listens for key presses and sends the keys to your
