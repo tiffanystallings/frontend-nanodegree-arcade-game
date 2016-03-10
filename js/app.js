@@ -155,12 +155,27 @@ Button.prototype.draw = function() {
 
 //Star collectible class
 var Star = function (x, y) {
+    this.sprite = 'images/star.png';
     this.x = x;
     this.y = y;
-    this.w = 101;
-    this.h = 83;
+    this.w = 50;
+    this.h = 40
 }
 
+Star.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+
+Star.prototype.update = function() {
+    window.requestAnimationFrame(Star.prototype.update);
+
+    if (checkCollision(this, player)) {
+        player.resetPlayer();
+        player.score += 300;
+        this.x = -100;
+        this.y = -100;
+    }
+}
 
 
 // Instantiating water objects
@@ -169,6 +184,9 @@ var water = [new WaterBlock(0, 0)];
 // Instantiating player and enemies.
 var allEnemies = [new Enemy(50), new Enemy(135), new Enemy(220)];
 var player = new Player(202, 375);
+
+// Instantiating collectibles
+var star = new Star (202, 50);
 
 
 // This listens for key presses and sends the keys to your

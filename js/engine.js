@@ -97,6 +97,7 @@ var Engine = (function(global) {
         water.forEach(function(water) {
             water.update(dt);
         });
+        star.update();
 
     }
 
@@ -197,6 +198,7 @@ var Engine = (function(global) {
         });
 
         player.render();
+        star.render();
     }
 
     /* This function does nothing but it could have been a good place to
