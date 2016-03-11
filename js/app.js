@@ -159,7 +159,8 @@ var Star = function (x, y) {
     this.x = x;
     this.y = y;
     this.w = 50;
-    this.h = 40
+    this.h = 40;
+    this.collected = false;
 }
 
 Star.prototype.render = function() {
@@ -170,10 +171,10 @@ Star.prototype.update = function() {
     window.requestAnimationFrame(Star.prototype.update);
 
     if (checkCollision(this, player)) {
-        player.resetPlayer();
         player.score += 300;
         this.x = -100;
         this.y = -100;
+        this.collected = true;
     }
 }
 

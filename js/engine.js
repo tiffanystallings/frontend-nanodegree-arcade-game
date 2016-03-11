@@ -24,6 +24,7 @@ var Engine = (function(global) {
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
         waterCoords = [],
+        pauseGame = false,
         level, lastTime;
 
     canvas.width = 505;
@@ -40,24 +41,34 @@ var Engine = (function(global) {
          * would be the same for everyone (regardless of how fast their
          * computer is) - hurray time!
          */
-        var now = Date.now(),
-            dt = (now - lastTime) / 1000.0;
 
-        /* Call our update/render functions, pass along the time delta to
-         * our update function since it may be used for smooth animation.
-         */
-        update(dt);
-        render();
+        if (pauseGame) {
+            return;
+        } else {
+            var now = Date.now(),
+                dt = (now - lastTime) / 1000.0;
 
-        /* Set our lastTime variable which is used to determine the time delta
-         * for the next time this function is called.
-         */
-        lastTime = now;
+            /* Call our update/render functions, pass along the time delta to
+             * our update function since it may be used for smooth animation.
+             */
+            update(dt);
+            render();
 
-        /* Use the browser's requestAnimationFrame function to call this
-         * function again as soon as the browser is able to draw another frame.
-         */
-        win.requestAnimationFrame(main);
+            /* Set our lastTime variable which is used to determine the time delta
+             * for the next time this function is called.
+             */
+            lastTime = now;
+
+            /* Use the browser's requestAnimationFrame function to call this
+             * function again as soon as the browser is able to draw another frame.
+             */
+            win.requestAnimationFrame(main);
+
+            if (star.collected === true) {
+                star.collected = false
+                reset();
+            }
+        }
     }
 
     function init() {
@@ -206,10 +217,11 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
+        pauseGame = true;
         splashScreen();
     }
 
-    //This function runs the opening screen
+    // Setting up the background for the start, game over, and level up screens.
     function splashScreen() {
         //Set up background
         var cells = {
@@ -236,14 +248,20 @@ var Engine = (function(global) {
                     col * cells.w, row * cells.h);
             }
         }
+        playButton();
+        buttonClick();
+    }
 
+    function playButton() {
         //Define and draw the start button.
         button = new Button(canvas.width/2-150, canvas.height/2-50,
             300, 100, 'Play!')
         button.draw();
+    }
 
-        //Check if start button has been clicked.
+    function buttonClick() {
         document.addEventListener('click', function(e) {
+            console.log(e.offsetX + ', ' + e.offsetY);
             var clickObj = {
                 'x': e.offsetX,
                 'y': e.offsetY,
@@ -254,10 +272,11 @@ var Engine = (function(global) {
             if (checkCollision(button, clickObj)) {
                 ctx.fillstyle = '#fff';
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pauseGame = false;
                 main();
             }
         });
-}
+    }
 
     /* Go ahead and load all of the images we know we're going to need to
      * draw our game level. Then set init as the callback method, so that when
