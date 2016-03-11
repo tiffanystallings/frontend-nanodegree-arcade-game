@@ -121,12 +121,11 @@ Player.prototype.handleInput = function(key) {
 
 Player.prototype.loseLife = function() {
     this.lives -= 1;
-    console.log(this.lives);
 }
 
 Player.prototype.resetPlayer = function(){
-    player.x = 202;
-    player.y = 375;
+    this.x = 202;
+    this.y = 375;
 }
 
 // This class defines the style for UI buttons
@@ -142,15 +141,15 @@ Button.prototype.draw = function() {
     ctx.fillStyle = '#4e66d2';
     ctx.strokeStyle = '#fff'
     ctx.lineWidth = 5;
-    ctx.fillRect(button.x, button.y, button.w, button.h);
-    ctx.strokeRect(button.x, button.y, button.w, button.h);
+    ctx.fillRect(this.x, this.y, this.w, this.h);
+    ctx.strokeRect(this.x, this.y, this.w, this.h);
 
     ctx.font = '36pt Impact';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#fff';
-    ctx.fillText(button.text, button.x + button.w/2,
-        button.y + button.h/2);
+    ctx.fillText(this.text, this.x + this.w/2,
+        this.y + this.h/2);
 }
 
 //Star collectible class

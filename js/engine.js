@@ -67,7 +67,11 @@ var Engine = (function(global) {
             if (star.collected === true) {
                 star.collected = false
                 reset();
-            }
+            };
+
+            if (player.lives < 0) {
+            gameOver();
+            };
         }
     }
 
@@ -87,10 +91,6 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-
-        if (player.lives < 0) {
-            location.reload();
-        }
     }
 
     /* This is called by the update function and loops through all of the
@@ -223,59 +223,54 @@ var Engine = (function(global) {
 
     // Setting up the background for the start, game over, and level up screens.
     function splashScreen() {
-        //Set up background
-        var cells = {
-             'grass': 'images/grass-block.png',
-             'stone': 'images/stone-block.png',
-             'h': 83,
-             'w': 101
-            },
-            background = [
-                cells.grass,
-                cells.grass,
-                cells.stone,
-                cells.stone,
-                cells.grass,
-                cells.grass],
+        background();
+        var button = playButton();
+        clickPlay();
 
-            numRows = 6,
-            numCols = 5,
-            row, col;
+        function clickPlay() {
+            document.addEventListener('click', function(e) {
+                console.log(e.offsetX + ', ' + e.offsetY);
+                var clickObj = {
+                    'x': e.offsetX,
+                    'y': e.offsetY,
+                    'h': 3,
+                    'w': 3
+                };
 
-        for (row = 0; row < numRows; row++) {
-            for (col = 0; col < numCols; col++) {
-                ctx.drawImage(Resources.get(background[row]),
-                    col * cells.w, row * cells.h);
-            }
+                if (checkCollision(button, clickObj)) {
+                    ctx.fillstyle = '#fff';
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    pauseGame = false;
+                    main();
+                }
+            });
         }
-        playButton();
-        buttonClick();
     }
 
-    function playButton() {
-        //Define and draw the start button.
-        button = new Button(canvas.width/2-150, canvas.height/2-50,
-            300, 100, 'Play!')
-        button.draw();
-    }
+    function gameOver() {
+        pauseGame = true;
+        background();
+        var button = retryButton();
+        clickRetry();
 
-    function buttonClick() {
-        document.addEventListener('click', function(e) {
-            console.log(e.offsetX + ', ' + e.offsetY);
-            var clickObj = {
-                'x': e.offsetX,
-                'y': e.offsetY,
-                'h': 3,
-                'w': 3
-            };
+        ctx.font = '55pt Impact';
+        ctx.textAlign = 'center';
+        ctx.fillText('GAME OVER!', 252, 185);
 
-            if (checkCollision(button, clickObj)) {
-                ctx.fillstyle = '#fff';
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                pauseGame = false;
-                main();
-            }
-        });
+        function clickRetry() {
+            document.addEventListener('click', function(e) {
+                var clickObj = {
+                    'x': e.offsetX,
+                    'y': e.offsetY,
+                    'h': 3,
+                    'w': 3
+                };
+                if (checkCollision(button, clickObj)) {
+                    console.log('button cicked!')
+                    location.reload();
+                }
+            });
+        }
     }
 
     /* Go ahead and load all of the images we know we're going to need to
