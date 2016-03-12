@@ -5,10 +5,10 @@ var UI = function() {
 	ctx.font = '36pt Impact';
 	ctx.fillStyle = '#fff';
 	ctx.textBaseline = 'hanging';
-	ctx.fillText('x'+player.lives, 100, 65);
+	ctx.fillText('x' + level.player.lives, 100, 65);
 
 	ctx.textAlign = 'right';
-	ctx.fillText(player.score, 500, 65);
+	ctx.fillText(level.player.score, 500, 65);
 }
 
 function playButton() {
@@ -22,6 +22,13 @@ function playButton() {
 function retryButton() {
 	var button = new Button(canvas.width/2-150, canvas.height/2-50,
         300, 100, 'Retry');
+	button.draw();
+	return button;
+}
+
+function nextLevelButton() {
+	var button = new Button(canvas.width/2-150, canvas.height/2-50,
+        300, 100, 'Next Level');
 	button.draw();
 	return button;
 }

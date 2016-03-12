@@ -23,9 +23,9 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
-        waterCoords = [],
         pauseGame = false,
-        level, lastTime;
+        lastTime;
+        level = new Level1;
 
     canvas.width = 505;
     canvas.height = 606;
@@ -51,8 +51,10 @@ var Engine = (function(global) {
             /* Call our update/render functions, pass along the time delta to
              * our update function since it may be used for smooth animation.
              */
+
             update(dt);
             render();
+
 
             /* Set our lastTime variable which is used to determine the time delta
              * for the next time this function is called.
@@ -64,12 +66,12 @@ var Engine = (function(global) {
              */
             win.requestAnimationFrame(main);
 
-            if (star.collected === true) {
-                star.collected = false
-                reset();
+            if (level.star.collected === true) {
+                level.star.collected = false
+                nextLevel();
             };
 
-            if (player.lives < 0) {
+            if (level.player.lives < 0) {
             gameOver();
             };
         }
@@ -90,6 +92,7 @@ var Engine = (function(global) {
      * on the entities themselves within your app.js file).
      */
     function update(dt) {
+
         updateEntities(dt);
     }
 
@@ -101,98 +104,24 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
+        var allEnemies = level.enemies;
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
-        player.update();
-        water.forEach(function(water) {
+        level.player.update();
+        level.water.forEach(function(water) {
             water.update(dt);
         });
-        star.update();
+        level.star.update();
 
     }
 
     /* This function initially draws the "game level", it will then call
-     * the renderEntities function. Remember, this function is called every
-     * game tick (or loop of the game engine) because that's how games work -
-     * they are flipbooks creating the illusion of animation but in reality
-     * they are just drawing the entire screen over and over.
+     * the renderEntities function.
      */
     function render() {
-        /* Combined images to a function for the renderer to reference
-        /* to make designing additional levels easier.
-         */
-        var cells = {
-            'water': 'images/water-block.png',
-            'grass': 'images/grass-block.png',
-            'stone': 'images/stone-block.png',
-            'h': 83,
-            'w': 101
-        },
-        // Build Level 1.
-        level1 = {
-            'numRows': 6,
-            'numCols': 5,
-            'map': []
-        },
-
-        row, col;
-
-        for (row = 0; row < level1.numRows; row++) {
-            addRow = [];
-            for (col = 0; col < level1.numCols; col++) {
-                if (row === 0) {
-                    addRow.push(cells.water);
-                }
-                else if (row === 1 || row === 2 || row === 3) {
-                    addRow.push(cells.stone);
-                }
-                else {
-                    addRow.push(cells.grass);
-                }
-            };
-            level1.map.push(addRow);
-        }
-
-        // Declare the current level and render it on the canvas.
-        level = level1;
-
-        for (row = 0; row < level.numRows; row++) {
-            for (col= 0; col < level.numCols; col++) {
-                var cellX = col * cells.w;
-                var cellY = row * cells.h;
-                var cellCoords = [cellX, cellY - cells.h];
-                ctx.drawImage(Resources.get(level.map[row][col]), cellX, cellY);
-
-                // Track coordinates of water blocks for collision.
-                if (level.map[row][col] == cells.water &&
-                    checkIfIn(waterCoords, cellCoords) === false) {
-                    waterCoords.push(cellCoords);
-                };
-            };
-        };
-
-        // Checking if a value has already been pushed to the array.
-        function checkIfIn(array, value) {
-            var count = 0;
-            for (var i = 0; i < array.length; i++) {
-                if (array[i][0] == value[0] && array[i][1] == value[1]) {
-                    count ++;
-                }
-            };
-            if (count === 0) {
-                return false;
-            }
-            else {
-                return true;
-            }
-        }
-
+        level.render();
         renderEntities();
-        water.forEach(function(water){
-            water.instantiate(waterCoords);
-        });
-
         UI();
     }
 
@@ -204,12 +133,13 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
+        var allEnemies = level.enemies;
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
 
-        player.render();
-        star.render();
+        level.player.render();
+        level.star.render();
     }
 
     /* This function does nothing but it could have been a good place to
@@ -247,6 +177,33 @@ var Engine = (function(global) {
         }
     }
 
+    function nextLevel(level) {
+        pauseGame = true;
+        background();
+        var button = nextLevelButton();
+        clickNext(level);
+
+        ctx.font = '55pt Impact';
+        ctx.textAlign = 'center';
+        ctx.fillText('Nicely Done!', 252, 185);
+
+        function clickNext(level) {
+            document.addEventListener('click', function(e) {
+                console.log(e.offsetX + ', ' + e.offsetY);
+                var clickObj = {
+                    'x': e.offsetX,
+                    'y': e.offsetY,
+                    'h': 3,
+                    'w': 3
+                };
+                if (checkCollision(button, clickObj)) {
+                    pauseGame = false;
+                    level;
+                }
+            });
+        }
+    }
+
     function gameOver() {
         pauseGame = true;
         background();
@@ -266,7 +223,6 @@ var Engine = (function(global) {
                     'w': 3
                 };
                 if (checkCollision(button, clickObj)) {
-                    console.log('button cicked!')
                     location.reload();
                 }
             });
@@ -298,5 +254,4 @@ var Engine = (function(global) {
      */
     global.ctx = ctx;
     global.canvas = canvas;
-    global.waterCoords = waterCoords;
 })(this);

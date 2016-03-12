@@ -1,5 +1,6 @@
-//Function for detecting collision.
 
+
+//Function for detecting collision.
 function checkCollision(obj1, obj2) {
     if (obj1.x < obj2.x + obj2.w &&
         obj1.x + obj1.w > obj2.x &&
@@ -14,11 +15,6 @@ function checkCollision(obj1, obj2) {
 
 // Enemies our player must avoid
 var Enemy = function(y) {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
-
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
     this.x = -100;
     this.y = y;
@@ -30,9 +26,6 @@ var Enemy = function(y) {
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
-    // You should multiply any movement by the dt parameter
-    // which will ensure the game runs at the same speed for
-    // all computers.
     window.requestAnimationFrame(Enemy.prototype.update);
 
     this.x += this.speed * dt;
@@ -42,9 +35,9 @@ Enemy.prototype.update = function(dt) {
     };
 
     //Collision
-    if (checkCollision(this, player)) {
-        player.resetPlayer();
-        player.loseLife();
+    if (checkCollision(this, level.player)) {
+        level.player.resetPlayer();
+        level.player.loseLife();
     }
 };
 
@@ -53,7 +46,7 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-//Establishing water block locations for collision.
+// Establishing water block locations for collision.
 var WaterBlock = function(x, y) {
     this.x = x;
     this.y = y;
@@ -61,20 +54,18 @@ var WaterBlock = function(x, y) {
     this.h = 83;
 };
 
+// Check if player has stepped into a water block.
 WaterBlock.prototype.update = function(dt) {
-    if (checkCollision(this, player)) {
-        player.resetPlayer();
-        player.loseLife();
+    if (checkCollision(this, level.player)) {
+        level.player.resetPlayer();
+        level.player.loseLife();
     }
 }
 
+// Makes an array of x, y coordinates for water block locations.
 WaterBlock.prototype.instantiate = function(coords) {
-    water = [];
-    if (water.length < coords.length) {
-        for (i = 0; i < coords.length; i++) {
-            water.push(new WaterBlock(coords[i][0], coords[i][1]));
-        };
-    }
+    level.water = [];
+
 }
 
 // This class defines the player object and holds game data.
@@ -88,14 +79,17 @@ var Player = function(x, y) {
     this.score = 0;
 };
 
+// Update the player's position.
 Player.prototype.update = function() {
     window.requestAnimationFrame(Player.prototype.update);
 };
 
+// Draw the player on the screen.
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+// Move the player on key press
 Player.prototype.handleInput = function(key) {
     if (key == 'left') {
         if (this.x - 100 > 0) {
@@ -119,16 +113,18 @@ Player.prototype.handleInput = function(key) {
     };
 };
 
+// Subtracts a life from player
 Player.prototype.loseLife = function() {
     this.lives -= 1;
 }
 
+// Puts player back at beginning.
 Player.prototype.resetPlayer = function(){
     this.x = 202;
     this.y = 375;
 }
 
-// This class defines the style for UI buttons
+// Class for UI buttons.
 var Button = function(x, y, w, h, text) {
     this.x = x;
     this.y = y;
@@ -137,6 +133,7 @@ var Button = function(x, y, w, h, text) {
     this.text = text;
 }
 
+// Defines the style of buttons.
 Button.prototype.draw = function() {
     ctx.fillStyle = '#4e66d2';
     ctx.strokeStyle = '#fff'
@@ -152,7 +149,7 @@ Button.prototype.draw = function() {
         this.y + this.h/2);
 }
 
-//Star collectible class
+// Star collectible class
 var Star = function (x, y) {
     this.sprite = 'images/star.png';
     this.x = x;
@@ -162,22 +159,97 @@ var Star = function (x, y) {
     this.collected = false;
 }
 
+// Draw the star on the canvas
 Star.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
+// Enable collection of star.
+// Player gains points and the star moves off screen.
 Star.prototype.update = function() {
     window.requestAnimationFrame(Star.prototype.update);
 
-    if (checkCollision(this, player)) {
-        player.score += 300;
+    if (checkCollision(this, level.player)) {
+        level.player.score += 300;
         this.x = -100;
         this.y = -100;
         this.collected = true;
     }
 }
 
+var Level1 = function() {
+    this.cells = {
+        'water': 'images/water-block.png',
+        'grass': 'images/grass-block.png',
+        'stone': 'images/stone-block.png',
+        'h': 83,
+        'w': 101
+    };
+        // Build Level 1.
+    this.numRows = 6;
+    this.numCols = 5;
+    this.map = [];
+    this.enemies = [new Enemy(50), new Enemy(135), new Enemy(220)];
+    this.player = new Player(202, 375);
+    this.star = new Star (202, 50);
+    this.water = [];
+}
 
+Level1.prototype.render = function() {
+    var row, col,
+        waterCoords = [];
+
+    for (row = 0; row < this.numRows; row++) {
+            addRow = [];
+        for (col = 0; col < this.numCols; col++) {
+            if (row === 0) {
+                addRow.push(this.cells.water);
+            }
+            else if (row === 1 || row === 2 || row === 3) {
+                addRow.push(this.cells.stone);
+            } else {
+                addRow.push(this.cells.grass);
+            }
+        };
+        this.map.push(addRow);
+    }
+
+    for (row = 0; row < this.numRows; row++) {
+        for (col= 0; col < this.numCols; col++) {
+            var cellX = col * this.cells.w;
+            var cellY = row * this.cells.h;
+            var cellCoords = [cellX, cellY - this.cells.h];
+            ctx.drawImage(Resources.get(this.map[row][col]), cellX, cellY);
+
+            // Track coordinates of water blocks for collision.
+            if (this.map[row][col] == this.cells.water &&
+              checkIfIn(waterCoords, cellCoords) === false) {
+                waterCoords.push(cellCoords);
+            };
+        };
+    };
+
+    if (this.water.length < waterCoords.length) {
+        for (i = 0; i < waterCoords.length; i++) {
+            this.water.push(new WaterBlock(waterCoords[i][0], waterCoords[i][1]));
+        };
+    };
+}
+
+function checkIfIn(array, value) {
+    var count = 0;
+    for (var i = 0; i < array.length; i++) {
+        if (array[i][0] == value[0] && array[i][1] == value[1]) {
+            count ++;
+        }
+    };
+    if (count === 0) {
+        return false;
+    } else {
+        return true;
+    }
+}
+/*
 // Instantiating water objects
 var water = [new WaterBlock(0, 0)];
 
@@ -188,7 +260,7 @@ var player = new Player(202, 375);
 // Instantiating collectibles
 var star = new Star (202, 50);
 
-
+*/
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
@@ -199,5 +271,5 @@ document.addEventListener('keyup', function(e) {
         40: 'down'
     };
 
-    player.handleInput(allowedKeys[e.keyCode]);
+    level.player.handleInput(allowedKeys[e.keyCode]);
 });
