@@ -25,7 +25,7 @@ var Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         pauseGame = false,
         lastTime;
-        level = new Level1;
+        level = new Level;
 
     canvas.width = 505;
     canvas.height = 606;
@@ -68,7 +68,7 @@ var Engine = (function(global) {
 
             if (level.star.collected === true) {
                 level.star.collected = false
-                nextLevel();
+                nextLevel(level2());
             };
 
             if (level.player.lives < 0) {
@@ -159,7 +159,6 @@ var Engine = (function(global) {
 
         function clickPlay() {
             document.addEventListener('click', function(e) {
-                console.log(e.offsetX + ', ' + e.offsetY);
                 var clickObj = {
                     'x': e.offsetX,
                     'y': e.offsetY,
@@ -177,19 +176,18 @@ var Engine = (function(global) {
         }
     }
 
-    function nextLevel(level) {
+    function nextLevel(l) {
         pauseGame = true;
         background();
         var button = nextLevelButton();
-        clickNext(level);
+        clickNext(l);
 
         ctx.font = '55pt Impact';
         ctx.textAlign = 'center';
         ctx.fillText('Nicely Done!', 252, 185);
 
-        function clickNext(level) {
+        function clickNext(l) {
             document.addEventListener('click', function(e) {
-                console.log(e.offsetX + ', ' + e.offsetY);
                 var clickObj = {
                     'x': e.offsetX,
                     'y': e.offsetY,
@@ -197,8 +195,9 @@ var Engine = (function(global) {
                     'w': 3
                 };
                 if (checkCollision(button, clickObj)) {
+                    ctx.clearRect(0,0, canvas.width, canvas.height);
                     pauseGame = false;
-                    level;
+                    level = l;
                 }
             });
         }

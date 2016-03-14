@@ -177,7 +177,7 @@ Star.prototype.update = function() {
     }
 }
 
-var Level1 = function() {
+var Level = function() {
     this.cells = {
         'water': 'images/water-block.png',
         'grass': 'images/grass-block.png',
@@ -188,31 +188,29 @@ var Level1 = function() {
         // Build Level 1.
     this.numRows = 6;
     this.numCols = 5;
-    this.map = [];
+
+    var s = this.cells.stone,
+        w = this.cells.water,
+        g = this.cells.grass;
+
+    this.map = [
+        [w, w, w, w, w],
+        [s, s, s, s, s],
+        [s, s, s, s, s],
+        [s, s, s, s, s],
+        [g, g, g, g, g],
+        [g, g, g, g, g]
+    ];
+
     this.enemies = [new Enemy(50), new Enemy(135), new Enemy(220)];
     this.player = new Player(202, 375);
-    this.star = new Star (202, 50);
+    this.star = new Star(202, 50);
     this.water = [];
 }
 
-Level1.prototype.render = function() {
+Level.prototype.render = function() {
     var row, col,
         waterCoords = [];
-
-    for (row = 0; row < this.numRows; row++) {
-            addRow = [];
-        for (col = 0; col < this.numCols; col++) {
-            if (row === 0) {
-                addRow.push(this.cells.water);
-            }
-            else if (row === 1 || row === 2 || row === 3) {
-                addRow.push(this.cells.stone);
-            } else {
-                addRow.push(this.cells.grass);
-            }
-        };
-        this.map.push(addRow);
-    }
 
     for (row = 0; row < this.numRows; row++) {
         for (col= 0; col < this.numCols; col++) {
@@ -236,6 +234,56 @@ Level1.prototype.render = function() {
     };
 }
 
+function level2() {
+    var level2 = new Level();
+    var s = level2.cells.stone,
+        w = level2.cells.water,
+        g = level2.cells.grass;
+
+    level2.map = [
+        [g, g, g, g, g],
+        [s, s, s, s, s],
+        [w, w, s, w, w],
+        [s, s, s, s, s],
+        [s, s, s, s, s],
+        [g, g, g, g, g]
+    ];
+    level2.enemies = [new Enemy(50), new Enemy(220), new Enemy(300)];
+    level2.player = level.player;
+    level2.star = new Star (202, 50);
+    level2.water = [];
+
+    level2.player.x = 202;
+    level2.player.y = 375;
+
+    return level2;
+}
+
+/* Level2.prototype.render = function() {
+    var row, col,
+        waterCoords = [];
+    for (row = 0; row < this.numRows; row++) {
+        for (col= 0; col < this.numCols; col++) {
+            var cellX = col * this.cells.w;
+            var cellY = row * this.cells.h;
+            var cellCoords = [cellX, cellY - this.cells.h];
+            ctx.drawImage(Resources.get(this.map[row][col]), cellX, cellY);
+
+            // Track coordinates of water blocks for collision.
+            if (this.map[row][col] == this.cells.water &&
+              checkIfIn(waterCoords, cellCoords) === false) {
+                waterCoords.push(cellCoords);
+            };
+        };
+    };
+
+    if (this.water.length < waterCoords.length) {
+        for (i = 0; i < waterCoords.length; i++) {
+            this.water.push(new WaterBlock(waterCoords[i][0], waterCoords[i][1]));
+        };
+    };
+}
+*/
 function checkIfIn(array, value) {
     var count = 0;
     for (var i = 0; i < array.length; i++) {
