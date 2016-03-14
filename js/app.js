@@ -1,6 +1,4 @@
-
-
-//Function for detecting collision.
+//Takes two objects as input and outputs collision
 function checkCollision(obj1, obj2) {
     if (obj1.x < obj2.x + obj2.w &&
         obj1.x + obj1.w > obj2.x &&
@@ -49,9 +47,9 @@ Enemy.prototype.render = function() {
 // Establishing water block locations for collision.
 var WaterBlock = function(x, y) {
     this.x = x;
-    this.y = y;
+    this.y = y + 43;
     this.w = 101;
-    this.h = 83;
+    this.h = 43;
 };
 
 // Check if player has stepped into a water block.
@@ -60,12 +58,6 @@ WaterBlock.prototype.update = function(dt) {
         level.player.resetPlayer();
         level.player.loseLife();
     }
-}
-
-// Makes an array of x, y coordinates for water block locations.
-WaterBlock.prototype.instantiate = function(coords) {
-    level.water = [];
-
 }
 
 // This class defines the player object and holds game data.
@@ -178,6 +170,7 @@ Star.prototype.update = function() {
 }
 
 var Level = function() {
+    this.id = 1;
     this.cells = {
         'water': 'images/water-block.png',
         'grass': 'images/grass-block.png',
@@ -185,7 +178,6 @@ var Level = function() {
         'h': 83,
         'w': 101
     };
-        // Build Level 1.
     this.numRows = 6;
     this.numCols = 5;
 
@@ -236,6 +228,7 @@ Level.prototype.render = function() {
 
 function level2() {
     var level2 = new Level();
+    level2.id = 2;
     var s = level2.cells.stone,
         w = level2.cells.water,
         g = level2.cells.grass;
@@ -250,7 +243,7 @@ function level2() {
     ];
     level2.enemies = [new Enemy(50), new Enemy(220), new Enemy(300)];
     level2.player = level.player;
-    level2.star = new Star (202, 50);
+    level2.star = new Star (404, 50);
     level2.water = [];
 
     level2.player.x = 202;
@@ -259,31 +252,6 @@ function level2() {
     return level2;
 }
 
-/* Level2.prototype.render = function() {
-    var row, col,
-        waterCoords = [];
-    for (row = 0; row < this.numRows; row++) {
-        for (col= 0; col < this.numCols; col++) {
-            var cellX = col * this.cells.w;
-            var cellY = row * this.cells.h;
-            var cellCoords = [cellX, cellY - this.cells.h];
-            ctx.drawImage(Resources.get(this.map[row][col]), cellX, cellY);
-
-            // Track coordinates of water blocks for collision.
-            if (this.map[row][col] == this.cells.water &&
-              checkIfIn(waterCoords, cellCoords) === false) {
-                waterCoords.push(cellCoords);
-            };
-        };
-    };
-
-    if (this.water.length < waterCoords.length) {
-        for (i = 0; i < waterCoords.length; i++) {
-            this.water.push(new WaterBlock(waterCoords[i][0], waterCoords[i][1]));
-        };
-    };
-}
-*/
 function checkIfIn(array, value) {
     var count = 0;
     for (var i = 0; i < array.length; i++) {
@@ -297,18 +265,7 @@ function checkIfIn(array, value) {
         return true;
     }
 }
-/*
-// Instantiating water objects
-var water = [new WaterBlock(0, 0)];
 
-// Instantiating player and enemies.
-var allEnemies = [new Enemy(50), new Enemy(135), new Enemy(220)];
-var player = new Player(202, 375);
-
-// Instantiating collectibles
-var star = new Star (202, 50);
-
-*/
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
