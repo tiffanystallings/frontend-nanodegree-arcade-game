@@ -224,6 +224,8 @@ Level.prototype.render = function() {
             this.water.push(new WaterBlock(waterCoords[i][0], waterCoords[i][1]));
         };
     };
+
+    //ctx.clearRect(0,-33, 505, 83);
 }
 
 function level2() {
@@ -250,6 +252,32 @@ function level2() {
     level2.player.y = 375;
 
     return level2;
+}
+
+function level3() {
+    var level3 = new Level();
+    level3.id = 3;
+    var s = level3.cells.stone,
+        w = level3.cells.water,
+        g = level3.cells.grass;
+
+    level3.map = [
+        [w, w, g, w, w],
+        [s, s, s, s, s],
+        [s, s, s, s, s],
+        [s, s, s, s, s],
+        [w, g, g, g, w],
+        [w, w, g, w, w]
+    ];
+    level3.enemies = [new Enemy(50), new Enemy(135), new Enemy(220)];
+    level3.player = level.player;
+    level3.star = new Star (202, -10);
+    level3.water = [];
+
+    level3.player.x = 202;
+    level3.player.y = 375;
+
+    return level3;
 }
 
 function checkIfIn(array, value) {

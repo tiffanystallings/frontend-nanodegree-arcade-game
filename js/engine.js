@@ -66,14 +66,8 @@ var Engine = (function(global) {
              */
             win.requestAnimationFrame(main);
 
-            if (level.star.collected === true) {
-                level.star.collected = false
-                nextLevel(level2());
-            };
-
-            if (level.player.lives < 0) {
-            gameOver();
-            };
+            checkWin();
+            checkLose();
         }
     }
 
@@ -120,6 +114,7 @@ var Engine = (function(global) {
      * the renderEntities function.
      */
     function render() {
+        ctx.clearRect(0,-33, 505, 83);
         level.render();
         renderEntities();
         UI();
@@ -173,6 +168,71 @@ var Engine = (function(global) {
                     main();
                 }
             });
+        }
+    }
+
+    function checkWin() {
+        if (level.star.collected === true) {
+            level.star.collected = false
+            ctx.clearRect(0,-33, 505, 83);
+
+            if (level.id === 1) {
+                nextLevel(level2());
+            }
+            else if (level.id === 2) {
+                nextLevel(level3());
+            }
+            else {
+                pauseGame = true;
+                background();
+                var button = replayButton();
+                clickReplay();
+
+                ctx.font = '55pt Impact';
+                ctx.textAlign = 'center';
+                ctx.fillText('YOU WIN!', 252, 185);
+
+                function clickReplay() {
+                    document.addEventListener('click', function(e) {
+                        var clickObj = {
+                            'x': e.offsetX,
+                            'y': e.offsetY,
+                            'h': 3,
+                            'w': 3
+                        };
+                        if (checkCollision(button, clickObj)) {
+                            location.reload();
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    function checkLose() {
+        if (level.player.lives < 0) {
+            pauseGame = true;
+            background();
+            var button = retryButton();
+            clickRetry();
+
+            ctx.font = '55pt Impact';
+            ctx.textAlign = 'center';
+            ctx.fillText('GAME OVER!', 252, 185);
+
+            function clickRetry() {
+                document.addEventListener('click', function(e) {
+                    var clickObj = {
+                        'x': e.offsetX,
+                        'y': e.offsetY,
+                        'h': 3,
+                        'w': 3
+                    };
+                    if (checkCollision(button, clickObj)) {
+                        location.reload();
+                    }
+                });
+            }
         }
     }
 

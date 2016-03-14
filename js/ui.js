@@ -26,6 +26,13 @@ function retryButton() {
 	return button;
 }
 
+function replayButton() {
+	var button = new Button(canvas.width/2-150, canvas.height/2-50,
+        300, 100, 'Replay');
+	button.draw();
+	return button;
+}
+
 function nextLevelButton() {
 	var button = new Button(canvas.width/2-150, canvas.height/2-50,
         300, 100, 'Next Level');
