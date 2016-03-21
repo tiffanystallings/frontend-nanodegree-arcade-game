@@ -1,47 +1,67 @@
-var UI = function() {
-	heartImage = Resources.get('images/heart.png');
-	ctx.drawImage(heartImage, 0, 35, heartImage.width * 0.5, heartImage.height * 0.5);
+/**
+ * @description Renders the HUD for the player to track lives and score
+ */
+function ui() {
+    heartImage = Resources.get('images/heart.png');
+    ctx.drawImage(heartImage, 0, 35, heartImage.width * 0.5, heartImage.height * 0.5);
 
-	ctx.font = '36pt Impact';
-	ctx.fillStyle = '#fff';
-	ctx.textBaseline = 'hanging';
-	ctx.fillText('x' + level.player.lives, 100, 65);
+    ctx.font = '36pt Impact';
+    ctx.fillStyle = '#fff';
+    ctx.textBaseline = 'hanging';
+    ctx.fillText('x' + level.player.lives, 100, 65);
 
-	ctx.textAlign = 'right';
-	ctx.fillText(level.player.score, 500, 65);
+    ctx.textAlign = 'right';
+    ctx.fillText(level.player.score, 500, 65);
 }
 
+/**
+ * @description Creates a 'Play!' button
+ * @returns The rendered button
+ */
 function playButton() {
-	//Define and draw the start button.
     var button = new Button(canvas.width/2-150, canvas.height/2-50,
         300, 100, 'Play!');
     button.draw();
     return button;
 }
 
+/**
+ * @description Creates a 'Retry' button
+ * @returns The rendered button
+ */
 function retryButton() {
-	var button = new Button(canvas.width/2-150, canvas.height/2-50,
+    var button = new Button(canvas.width/2-150, canvas.height/2-50,
         300, 100, 'Retry');
-	button.draw();
-	return button;
+    button.draw();
+    return button;
 }
 
+/**
+ * @description Creates a 'Replay' button
+ * @returns The rendered button
+ */
 function replayButton() {
-	var button = new Button(canvas.width/2-150, canvas.height/2-50,
+    var button = new Button(canvas.width/2-150, canvas.height/2-50,
         300, 100, 'Replay');
-	button.draw();
-	return button;
+    button.draw();
+    return button;
 }
 
+/**
+ * @description Creates a 'Next Level' button
+ * @returns The rendered button
+ */
 function nextLevelButton() {
-	var button = new Button(canvas.width/2-150, canvas.height/2-50,
+    var button = new Button(canvas.width/2-150, canvas.height/2-50,
         300, 100, 'Next Level');
-	button.draw();
-	return button;
+    button.draw();
+    return button;
 }
 
+/**
+ * @description Renders a background for splash screens
+ */
 function background() {
-    //Set up background
     var cells = {
         'grass': 'images/grass-block.png',
         'stone': 'images/stone-block.png',
