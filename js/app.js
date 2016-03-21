@@ -1,17 +1,10 @@
-//Takes two objects as input and outputs collision
-function checkCollision(obj1, obj2) {
-    if (obj1.x < obj2.x + obj2.w &&
-        obj1.x + obj1.w > obj2.x &&
-        obj1.y < obj2.y + obj2.h &&
-        obj1.h + obj1.y > obj2.y) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
+//Class Definitions
 
-// Enemies our player must avoid
+/**
+ * @description Defines enemies for the player to avoid
+ * @constructor
+ * @param {number} y - The y position of the enemy
+ */
 var Enemy = function(y) {
     this.sprite = 'images/enemy-bug.png';
     this.x = -100;
@@ -21,9 +14,12 @@ var Enemy = function(y) {
     this.speed = Math.floor(Math.random() * 300) + 50;
 };
 
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
+/**
+ * @description Moves enemies and checks player collision
+ * @param {number} dt - Delta time
+ */
 Enemy.prototype.update = function(dt) {
+    // Animation
     window.requestAnimationFrame(Enemy.prototype.update);
 
     this.x += this.speed * dt;
@@ -32,19 +28,26 @@ Enemy.prototype.update = function(dt) {
         this.x = -100;
     };
 
-    //Collision
+    // Collision
     if (checkCollision(this, level.player)) {
-        level.player.resetPlayer();
+        level.player.resetPlayer(202, 375);
         level.player.loseLife();
     }
 };
 
-// Draw the enemy on the screen, required method for game
+/**
+ * @description Draw the enemy on the screen
+ */
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-// Establishing water block locations for collision.
+/**
+ * @description Defines water blocks for the player to avoid
+ * @constructor
+ * @param {number} x
+ * @param {number} y
+ */
 var WaterBlock = function(x, y) {
     this.x = x;
     this.y = y + 43;
@@ -52,15 +55,23 @@ var WaterBlock = function(x, y) {
     this.h = 43;
 };
 
-// Check if player has stepped into a water block.
+/**
+ * @description Checks player collision with water
+ * @param {number} dt
+ */
 WaterBlock.prototype.update = function(dt) {
     if (checkCollision(this, level.player)) {
-        level.player.resetPlayer();
+        level.player.resetPlayer(202, 375);
         level.player.loseLife();
     }
 }
 
-// This class defines the player object and holds game data.
+/**
+ * @description Defines player object and holds game data
+ * @constructor
+ * @param {number} x
+ * @param {number} y
+ */
 var Player = function(x, y) {
     this.sprite = 'images/char-boy.png';
     this.x = x;
@@ -71,17 +82,24 @@ var Player = function(x, y) {
     this.score = 0;
 };
 
-// Update the player's position.
+/**
+ * @description Animates player movement
+ */
 Player.prototype.update = function() {
     window.requestAnimationFrame(Player.prototype.update);
 };
 
-// Draw the player on the screen.
+/**
+ * @description Draw the player on the screen
+ */
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-// Move the player on key press
+/**
+ * @description Move player on key press
+ * @param {string} key
+ */
 Player.prototype.handleInput = function(key) {
     if (key == 'left') {
         if (this.x - 100 > 0) {
@@ -105,18 +123,32 @@ Player.prototype.handleInput = function(key) {
     };
 };
 
-// Subtracts a life from player
+/**
+ * @description Subtracts a life from the player
+ */
 Player.prototype.loseLife = function() {
     this.lives -= 1;
 }
 
-// Puts player back at beginning.
-Player.prototype.resetPlayer = function(){
-    this.x = 202;
-    this.y = 375;
+/**
+ * @description Resets player to start position
+ * @param {number} x
+ * @param {number} y
+ */
+Player.prototype.resetPlayer = function(x, y){
+    this.x = x;
+    this.y = y;
 }
 
-// Class for UI buttons.
+/**
+ * @description Draw a button on the screen
+ * @constructor
+ * @param {number} x
+ * @param {number} y
+ * @param {number} w - Width
+ * @param {number} h - Height
+ * @param {string} text - Button text
+ */
 var Button = function(x, y, w, h, text) {
     this.x = x;
     this.y = y;
@@ -125,7 +157,9 @@ var Button = function(x, y, w, h, text) {
     this.text = text;
 }
 
-// Defines the style of buttons.
+/**
+ * @description Styles and draws buttons
+ */
 Button.prototype.draw = function() {
     ctx.fillStyle = '#4e66d2';
     ctx.strokeStyle = '#fff'
@@ -141,7 +175,12 @@ Button.prototype.draw = function() {
         this.y + this.h/2);
 }
 
-// Star collectible class
+/**
+ * @description Defines a collectible star
+ * @constructor
+ * @param {number} x
+ * @param {number} y
+ */
 var Star = function (x, y) {
     this.sprite = 'images/star.png';
     this.x = x;
@@ -151,13 +190,16 @@ var Star = function (x, y) {
     this.collected = false;
 }
 
-// Draw the star on the canvas
+/**
+ * @description Draws star on the canvas
+ */
 Star.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
-// Enable collection of star.
-// Player gains points and the star moves off screen.
+/**
+ * @description Player collects star and gains points
+ */
 Star.prototype.update = function() {
     window.requestAnimationFrame(Star.prototype.update);
 
@@ -169,6 +211,10 @@ Star.prototype.update = function() {
     }
 }
 
+/**
+ * @description Defines first game level
+ * @constructor
+ */
 var Level = function() {
     this.id = 1;
     this.cells = {
@@ -181,10 +227,12 @@ var Level = function() {
     this.numRows = 6;
     this.numCols = 5;
 
+    // Creates short calls for blocks
     var s = this.cells.stone,
         w = this.cells.water,
         g = this.cells.grass;
 
+    // ... and uses them to draw the map
     this.map = [
         [w, w, w, w, w],
         [s, s, s, s, s],
@@ -194,12 +242,16 @@ var Level = function() {
         [g, g, g, g, g]
     ];
 
+    // Instantiate objects
     this.enemies = [new Enemy(50), new Enemy(135), new Enemy(220)];
     this.player = new Player(202, 375);
     this.star = new Star(202, 50);
     this.water = [];
 }
 
+/**
+ * @description Parses the map and renders the level
+ */
 Level.prototype.render = function() {
     var row, col,
         waterCoords = [];
@@ -211,7 +263,7 @@ Level.prototype.render = function() {
             var cellCoords = [cellX, cellY - this.cells.h];
             ctx.drawImage(Resources.get(this.map[row][col]), cellX, cellY);
 
-            // Track coordinates of water blocks for collision.
+            // Track coordinates of water blocks for collision
             if (this.map[row][col] == this.cells.water &&
               checkIfIn(waterCoords, cellCoords) === false) {
                 waterCoords.push(cellCoords);
@@ -219,14 +271,17 @@ Level.prototype.render = function() {
         };
     };
 
+    // Pushes water coordinates to the level object
     if (this.water.length < waterCoords.length) {
         for (i = 0; i < waterCoords.length; i++) {
             this.water.push(new WaterBlock(waterCoords[i][0], waterCoords[i][1]));
         };
     };
-
-    //ctx.clearRect(0,-33, 505, 83);
 }
+
+/**
+ * @description Creates the second game level based on the Level class
+ */
 
 function level2() {
     var level2 = new Level();
@@ -254,6 +309,9 @@ function level2() {
     return level2;
 }
 
+/**
+ * @description Creates the third level
+ */
 function level3() {
     var level3 = new Level();
     level3.id = 3;
@@ -280,6 +338,30 @@ function level3() {
     return level3;
 }
 
+//Helper functions
+
+/**
+ * @description Checks for collision of two game objects
+ * @param {object} obj1
+ * @param {object} obj2
+ */
+function checkCollision(obj1, obj2) {
+    if (obj1.x < obj2.x + obj2.w &&
+        obj1.x + obj1.w > obj2.x &&
+        obj1.y < obj2.y + obj2.h &&
+        obj1.h + obj1.y > obj2.y) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+/**
+ * @description Iterates over an array in search of a specified value
+ * @param {array} array - The array being checked
+ * @param {number} value - The value to search for
+ */
 function checkIfIn(array, value) {
     var count = 0;
     for (var i = 0; i < array.length; i++) {
