@@ -171,6 +171,7 @@ var Engine = (function(global) {
                 ctx.font = '55pt Impact';
                 ctx.textAlign = 'center';
                 ctx.fillText('YOU WIN!', 252, 185);
+                ctx.fillText('Score: ' + level.player.score, 252, 433);
 
                 function clickReplay() {
                     document.addEventListener('click', function(e) {
@@ -202,6 +203,7 @@ var Engine = (function(global) {
             ctx.font = '55pt Impact';
             ctx.textAlign = 'center';
             ctx.fillText('GAME OVER!', 252, 185);
+            ctx.fillText('Score: ' + level.player.score, 252, 433);
 
             /**
              * @description Checks for collision with the retry button
@@ -252,37 +254,6 @@ var Engine = (function(global) {
                     ctx.clearRect(0,0, canvas.width, canvas.height);
                     pauseGame = false;
                     level = l;
-                }
-            });
-        }
-    }
-
-    /**
-     * @description Renders the game over screen
-     */
-    function gameOver() {
-        pauseGame = true;
-        background();
-        var button = retryButton();
-        clickRetry();
-
-        ctx.font = '55pt Impact';
-        ctx.textAlign = 'center';
-        ctx.fillText('GAME OVER!', 252, 185);
-
-        /**
-         * @description Checks collision with Retry button
-         */
-        function clickRetry() {
-            document.addEventListener('click', function(e) {
-                var clickObj = {
-                    'x': e.offsetX,
-                    'y': e.offsetY,
-                    'h': 3,
-                    'w': 3
-                };
-                if (checkCollision(button, clickObj)) {
-                    location.reload();
                 }
             });
         }
