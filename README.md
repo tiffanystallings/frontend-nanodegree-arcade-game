@@ -14,3 +14,12 @@ This game was created as part of Udacity's Front-End Web Development Nanodegree.
 3. Open the folder and run `index.html` with your preferred browser.
 
 ## How to Play
+* Use the arrow keys to move **UP**, **DOWN**, **LEFT**, and **RIGHT**
+* Collect the **STAR** to earn 300 points and advance to the next level!
+* Avoid bugs and water! They will cause you to lose a life and reset your position.
+* When you lose a life and your lives are at "0" it's **GAME OVER**!
+* Collect gems for extra points!
+	* **Orange** gems are worth 50 points
+	* **Blue** gems are worth 100 points
+	* **Green** gems are worth 300 points
+* When you beat all three levels, **YOU WIN**!
