@@ -212,6 +212,56 @@ Star.prototype.update = function() {
 }
 
 /**
+ * @description Defines a collectible gem
+ * @constructor
+ * @param {string} color - The color of the gem to be rendered
+ * @param {number} x
+ * @param {number} y
+ */
+var Gem = function (color, x, y) {
+    this.x = x;
+    this.y = y;
+    this.w = 50;
+    this.h = 40;
+
+    if (color == 'orange') {
+        this.sprite = 'images/gem-orange.png';
+        this.points = 50;
+    }
+    else if (color == 'blue') {
+        this.sprite = 'images/gem-blue.png';
+        this.points = 100;
+    }
+    else {
+        this.sprite = 'images/gem-green.png';
+        this.points = 200;
+    }
+}
+
+/**
+ * @description Renders the gem on the game level
+ */
+Gem.prototype.render = function() {
+    var sprite = Resources.get(this.sprite);
+    spriteWidth = sprite.width * 0.5;
+    spriteHeight = sprite.height * 0.5;
+    ctx.drawImage(sprite, this.x + 8, this.y + 83, spriteWidth, spriteHeight);
+}
+
+/**
+ * @description Checks if gem has been collected and credits player
+ */
+Gem.prototype.update = function() {
+    window.requestAnimationFrame(Gem.prototype.update);
+
+    if (checkCollision(this, level.player)) {
+        level.player.score += this.points;
+        this.x = -100;
+        this.y = -100;
+    }
+}
+
+/**
  * @description Defines first game level
  * @constructor
  */
@@ -247,6 +297,7 @@ var Level = function() {
     this.player = new Player(202, 375);
     this.star = new Star(202, 50);
     this.water = [];
+    this.gems = [new Gem('orange', 220, 202)]
 }
 
 /**
@@ -302,6 +353,7 @@ function level2() {
     level2.player = level.player;
     level2.star = new Star (404, 50);
     level2.water = [];
+    level2.gems = [new Gem('orange', 320, 195), new Gem('blue', 120, -45)];
 
     level2.player.x = 202;
     level2.player.y = 375;
@@ -331,6 +383,7 @@ function level3() {
     level3.player = level.player;
     level3.star = new Star (202, -10);
     level3.water = [];
+    level3.gems = [new Gem('orange', 320, 195), new Gem('blue', 220, 110), new Gem('green', 120, 25)];
 
     level3.player.x = 202;
     level3.player.y = 375;

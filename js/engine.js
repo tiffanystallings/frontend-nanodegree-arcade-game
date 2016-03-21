@@ -68,6 +68,7 @@ var Engine = (function(global) {
      */
     function updateEntities(dt) {
         var allEnemies = level.enemies;
+        var allGems = level.gems;
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
@@ -76,6 +77,9 @@ var Engine = (function(global) {
             water.update(dt);
         });
         level.star.update();
+        allGems.forEach(function(gem) {
+            gem.update();
+        });
 
     }
 
@@ -94,12 +98,16 @@ var Engine = (function(global) {
      */
     function renderEntities() {
         var allEnemies = level.enemies;
+        var allGems = level.gems;
         allEnemies.forEach(function(enemy) {
             enemy.render();
         });
 
         level.player.render();
         level.star.render();
+        allGems.forEach(function(gem) {
+            gem.render();
+        });
     }
 
     /**
@@ -294,7 +302,7 @@ var Engine = (function(global) {
         'images/star.png',
         'images/gem-blue.png',
         'images/gem-orange.png',
-        'images/gem-green.png',
+        'images/gem-green.png'
     ]);
     Resources.onReady(init);
 
