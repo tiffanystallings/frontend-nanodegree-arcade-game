@@ -182,7 +182,7 @@ Button.prototype.draw = function() {
  * @param {number} y
  */
 var Star = function (x, y) {
-    this.sprite = 'images/star.png';
+    this.sprite = 'images/Star.png';
     this.x = x;
     this.y = y;
     this.w = 50;

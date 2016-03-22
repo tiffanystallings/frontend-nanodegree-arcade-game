@@ -2,7 +2,7 @@
  * @description Renders the HUD for the player to track lives and score
  */
 function ui() {
-    heartImage = Resources.get('images/heart.png');
+    heartImage = Resources.get('images/Heart.png');
     ctx.drawImage(heartImage, 0, 35, heartImage.width * 0.5, heartImage.height * 0.5);
 
     ctx.font = '36pt Impact';
