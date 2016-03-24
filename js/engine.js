@@ -14,7 +14,7 @@ var Engine = (function(global) {
         ctx = canvas.getContext('2d'),
         pauseGame = false,
         lastTime;
-        level = new Level;
+        level = new Level();
 
     canvas.width = 505;
     canvas.height = 606;
@@ -63,24 +63,43 @@ var Engine = (function(global) {
     }
 
     /**
-     * @description Loops through level entities and updates their data
+     * @description Loops through level entities, updates them, and checks collision
      * @param {number} dt - Delta time
      */
     function updateEntities(dt) {
         var allEnemies = level.enemies;
         var allGems = level.gems;
+        var player = level.player;
+        var star = level.star;
+        var water = level.water;
+        player.update();
+
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
-        });
-        level.player.update();
-        level.water.forEach(function(water) {
-            water.update(dt);
-        });
-        level.star.update();
-        allGems.forEach(function(gem) {
-            gem.update();
+            if (checkCollision(enemy, player)) {
+                player.loseLife();
+                player.resetPlayer();
+            }
         });
 
+        star.update();
+        if (checkCollision(star, player)) {
+            star.gained();
+        }
+
+        allGems.forEach(function(gem) {
+            gem.update();
+            if (checkCollision(gem, player)) {
+                gem.collected();
+            }
+        });
+
+        water.forEach(function(water) {
+            if (checkCollision(water, player)) {
+                player.loseLife();
+                player.resetPlayer();
+            }
+        });
     }
 
     /**
@@ -152,8 +171,24 @@ var Engine = (function(global) {
      * @description Checks if player has collected the star, and handles level progression
      */
     function checkWin() {
+        /**
+         * @description Checks collision with the replay button
+         */
+        function clickReplay() {
+            document.addEventListener('click', function(e) {
+                var clickObj = {
+                    'x': e.offsetX,
+                    'y': e.offsetY,
+                    'h': 3,
+                    'w': 3
+                };
+                if (checkCollision(button, clickObj)) {
+                    location.reload();
+                }
+            });
+        }
         if (level.star.collected === true) {
-            level.star.collected = false
+            level.star.collected = false;
             ctx.clearRect(0,-33, 505, 83);
 
             if (level.id === 1) {
@@ -172,20 +207,6 @@ var Engine = (function(global) {
                 ctx.textAlign = 'center';
                 ctx.fillText('YOU WIN!', 252, 185);
                 ctx.fillText('Score: ' + level.player.score, 252, 433);
-
-                function clickReplay() {
-                    document.addEventListener('click', function(e) {
-                        var clickObj = {
-                            'x': e.offsetX,
-                            'y': e.offsetY,
-                            'h': 3,
-                            'w': 3
-                        };
-                        if (checkCollision(button, clickObj)) {
-                            location.reload();
-                        }
-                    });
-                }
             }
         }
     }
@@ -194,6 +215,22 @@ var Engine = (function(global) {
      * @description Checks if player has lost the game and handles game over screen
      */
     function checkLose() {
+        /**
+         * @description Checks collision with the retry button
+         */
+        function clickRetry() {
+            document.addEventListener('click', function(e) {
+                var clickObj = {
+                    'x': e.offsetX,
+                    'y': e.offsetY,
+                    'h': 3,
+                    'w': 3
+                };
+                if (checkCollision(button, clickObj)) {
+                    location.reload();
+                }
+            });
+        }
         if (level.player.lives < 0) {
             pauseGame = true;
             background();
@@ -204,23 +241,6 @@ var Engine = (function(global) {
             ctx.textAlign = 'center';
             ctx.fillText('GAME OVER!', 252, 185);
             ctx.fillText('Score: ' + level.player.score, 252, 433);
-
-            /**
-             * @description Checks for collision with the retry button
-             */
-            function clickRetry() {
-                document.addEventListener('click', function(e) {
-                    var clickObj = {
-                        'x': e.offsetX,
-                        'y': e.offsetY,
-                        'h': 3,
-                        'w': 3
-                    };
-                    if (checkCollision(button, clickObj)) {
-                        location.reload();
-                    }
-                });
-            }
         }
     }
 

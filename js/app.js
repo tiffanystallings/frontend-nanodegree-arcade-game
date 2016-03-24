@@ -15,23 +15,16 @@ var Enemy = function(y) {
 };
 
 /**
- * @description Moves enemies and checks player collision
+ * @description Moves enemies
  * @param {number} dt - Delta time
  */
 Enemy.prototype.update = function(dt) {
-    // Animation
     window.requestAnimationFrame(Enemy.prototype.update);
 
     this.x += this.speed * dt;
 
     if (this.x > 600) {
         this.x = -100;
-    };
-
-    // Collision
-    if (checkCollision(this, level.player)) {
-        level.player.resetPlayer(202, 375);
-        level.player.loseLife();
     }
 };
 
@@ -54,17 +47,6 @@ var WaterBlock = function(x, y) {
     this.w = 101;
     this.h = 43;
 };
-
-/**
- * @description Checks player collision with water
- * @param {number} dt
- */
-WaterBlock.prototype.update = function(dt) {
-    if (checkCollision(this, level.player)) {
-        level.player.resetPlayer(202, 375);
-        level.player.loseLife();
-    }
-}
 
 /**
  * @description Defines player object and holds game data
@@ -103,12 +85,12 @@ Player.prototype.render = function() {
 Player.prototype.handleInput = function(key) {
     if (key == 'left') {
         if (this.x - 100 > 0) {
-            this.x -= 100
+            this.x -= 100;
         }
     }
     else if (key == 'up') {
         if (this.y - 85 > -100) {
-            this.y -= 85
+            this.y -= 85;
         }
     }
     else if (key == 'right') {
@@ -120,7 +102,7 @@ Player.prototype.handleInput = function(key) {
         if (this.y + 85 < 400) {
             this.y += 85;
         }
-    };
+    }
 };
 
 /**
@@ -128,17 +110,17 @@ Player.prototype.handleInput = function(key) {
  */
 Player.prototype.loseLife = function() {
     this.lives -= 1;
-}
+};
 
 /**
  * @description Resets player to start position
  * @param {number} x
  * @param {number} y
  */
-Player.prototype.resetPlayer = function(x, y){
-    this.x = x;
-    this.y = y;
-}
+Player.prototype.resetPlayer = function(){
+    this.x = level.playerStartX;
+    this.y = level.playerStartY;
+};
 
 /**
  * @description Draw a button on the screen
@@ -155,14 +137,14 @@ var Button = function(x, y, w, h, text) {
     this.w = w;
     this.h = h;
     this.text = text;
-}
+};
 
 /**
  * @description Styles and draws buttons
  */
 Button.prototype.draw = function() {
     ctx.fillStyle = '#4e66d2';
-    ctx.strokeStyle = '#fff'
+    ctx.strokeStyle = '#fff';
     ctx.lineWidth = 5;
     ctx.fillRect(this.x, this.y, this.w, this.h);
     ctx.strokeRect(this.x, this.y, this.w, this.h);
@@ -173,7 +155,7 @@ Button.prototype.draw = function() {
     ctx.fillStyle = '#fff';
     ctx.fillText(this.text, this.x + this.w/2,
         this.y + this.h/2);
-}
+};
 
 /**
  * @description Defines a collectible star
@@ -188,28 +170,31 @@ var Star = function (x, y) {
     this.w = 50;
     this.h = 40;
     this.collected = false;
-}
+};
 
 /**
  * @description Draws star on the canvas
  */
 Star.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 /**
  * @description Player collects star and gains points
  */
 Star.prototype.update = function() {
     window.requestAnimationFrame(Star.prototype.update);
+};
 
-    if (checkCollision(this, level.player)) {
-        level.player.score += 300;
-        this.x = -100;
-        this.y = -100;
-        this.collected = true;
-    }
-}
+/**
+ * @description Tells the engine the Star has been collected
+ */
+Star.prototype.gained = function() {
+    level.player.score += 300;
+    this.x = -100;
+    this.y = -100;
+    this.collected = true;
+};
 
 /**
  * @description Defines a collectible gem
@@ -236,7 +221,7 @@ var Gem = function (color, x, y) {
         this.sprite = 'images/gem-green.png';
         this.points = 200;
     }
-}
+};
 
 /**
  * @description Renders the gem on the game level
@@ -246,20 +231,23 @@ Gem.prototype.render = function() {
     spriteWidth = sprite.width * 0.5;
     spriteHeight = sprite.height * 0.5;
     ctx.drawImage(sprite, this.x + 8, this.y + 83, spriteWidth, spriteHeight);
-}
+};
 
 /**
- * @description Checks if gem has been collected and credits player
+ * @description Displays gem
  */
 Gem.prototype.update = function() {
     window.requestAnimationFrame(Gem.prototype.update);
+};
 
-    if (checkCollision(this, level.player)) {
-        level.player.score += this.points;
-        this.x = -100;
-        this.y = -100;
-    }
-}
+/**
+ * @description Credits player and moves gem off screen
+ */
+Gem.prototype.collected = function() {
+    level.player.score += this.points;
+    this.x = -100;
+    this.y = -100;
+};
 
 /**
  * @description Defines first game level
@@ -276,6 +264,9 @@ var Level = function() {
     };
     this.numRows = 6;
     this.numCols = 5;
+
+    this.playerStartX = 202;
+    this.playerStartY = 375;
 
     // Creates short calls for blocks
     var s = this.cells.stone,
@@ -294,11 +285,11 @@ var Level = function() {
 
     // Instantiate objects
     this.enemies = [new Enemy(50), new Enemy(135), new Enemy(220)];
-    this.player = new Player(202, 375);
+    this.player = new Player(this.playerStartX, this.playerStartY);
     this.star = new Star(202, 50);
     this.water = [];
-    this.gems = [new Gem('orange', 220, 202)]
-}
+    this.gems = [new Gem('orange', 220, 202)];
+};
 
 /**
  * @description Parses the map and renders the level
@@ -318,17 +309,17 @@ Level.prototype.render = function() {
             if (this.map[row][col] == this.cells.water &&
               checkIfIn(waterCoords, cellCoords) === false) {
                 waterCoords.push(cellCoords);
-            };
-        };
-    };
+            }
+        }
+    }
 
     // Pushes water coordinates to the level object
     if (this.water.length < waterCoords.length) {
         for (i = 0; i < waterCoords.length; i++) {
             this.water.push(new WaterBlock(waterCoords[i][0], waterCoords[i][1]));
-        };
-    };
-}
+        }
+    }
+};
 
 /**
  * @description Creates the second game level based on the Level class
@@ -351,12 +342,11 @@ function level2() {
     ];
     level2.enemies = [new Enemy(50), new Enemy(220), new Enemy(300)];
     level2.player = level.player;
+    level2.player.x = level2.playerStartX;
+    level2.player.y = level2.playerStartY;
     level2.star = new Star (404, 50);
     level2.water = [];
     level2.gems = [new Gem('orange', 320, 195), new Gem('blue', 120, -45)];
-
-    level2.player.x = 202;
-    level2.player.y = 375;
 
     return level2;
 }
@@ -381,12 +371,11 @@ function level3() {
     ];
     level3.enemies = [new Enemy(50), new Enemy(135), new Enemy(220)];
     level3.player = level.player;
+    level3.player.x = level3.playerStartX;
+    level3.player.y = level3.playerStartY;
     level3.star = new Star (202, -10);
     level3.water = [];
     level3.gems = [new Gem('orange', 320, 195), new Gem('blue', 220, 110), new Gem('green', 120, 25)];
-
-    level3.player.x = 202;
-    level3.player.y = 375;
 
     return level3;
 }
@@ -421,7 +410,7 @@ function checkIfIn(array, value) {
         if (array[i][0] == value[0] && array[i][1] == value[1]) {
             count ++;
         }
-    };
+    }
     if (count === 0) {
         return false;
     } else {
