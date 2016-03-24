@@ -118,14 +118,14 @@ var Engine = (function(global) {
     function renderEntities() {
         var allEnemies = level.enemies;
         var allGems = level.gems;
-        allEnemies.forEach(function(enemy) {
-            enemy.render();
-        });
 
-        level.player.render();
         level.star.render();
         allGems.forEach(function(gem) {
             gem.render();
+        });
+        level.player.render();
+        allEnemies.forEach(function(enemy) {
+            enemy.render();
         });
     }
 
