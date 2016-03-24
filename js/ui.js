@@ -86,4 +86,4 @@ function background() {
                 col * cells.w, row * cells.h);
         }
     }
-};
+}

@@ -2,6 +2,10 @@
 This game was created as part of Udacity's Front-End Web Development Nanodegree. The core files were forked from [this](https://github.com/udacity/frontend-nanodegree-arcade-game) repository.
 
 ## Running the Game
+### From GH Pages
+This game is hosted through Github's GH pages feature!
+Click [here](http://tiffanystallings.github.io/frontend-nanodegree-arcade-game) when you're ready to play.
+
 ### Cloning with Git
 1. Open your preferred way of accessing the Git command line.
 2. Enter `git clone https://github.com/tiffanystallings/frontend-nanodegree-arcade-game.git`
