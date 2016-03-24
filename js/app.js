@@ -295,6 +295,24 @@ var Level = function() {
  * @description Parses the map and renders the level
  */
 Level.prototype.render = function() {
+    /**
+     * @description Iterates over an array in search of a specified value
+     * @param {array} array - The array being checked
+     * @param {number} value - The value to search for
+     */
+    function checkIfIn(array, value) {
+        var count = 0;
+        for (var i = 0; i < array.length; i++) {
+            if (array[i][0] == value[0] && array[i][1] == value[1]) {
+                count ++;
+            }
+        }
+        if (count === 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
     var row, col,
         waterCoords = [];
 
@@ -396,25 +414,6 @@ function checkCollision(obj1, obj2) {
     }
     else {
         return false;
-    }
-}
-
-/**
- * @description Iterates over an array in search of a specified value
- * @param {array} array - The array being checked
- * @param {number} value - The value to search for
- */
-function checkIfIn(array, value) {
-    var count = 0;
-    for (var i = 0; i < array.length; i++) {
-        if (array[i][0] == value[0] && array[i][1] == value[1]) {
-            count ++;
-        }
-    }
-    if (count === 0) {
-        return false;
-    } else {
-        return true;
     }
 }
 
